@@ -9,7 +9,8 @@ class Question(models.Model):
         return self.question_text
     def was_published_recently(self):
         # timedelta measures is publication recently made
-        return self.pub_date >=timezone.now() - self.__generateThresholdAcceptedAsRecentTime__()
+        now=timezone.now()
+        return now - self.__generateThresholdAcceptedAsRecentTime__()<=self.pub_date<= now
 
     def __generateThresholdAcceptedAsRecentTime__(self):
         return datetime.timedelta(days=1)

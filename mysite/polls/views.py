@@ -6,6 +6,8 @@ from django.views import generic
 
 from .models import Question,Choice
 
+# render(http object, template_path, context situasinya apa yg di pass ke front-end)
+# reverse is redirect to other website
 def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
     context = {'latest_question_list': latest_question_list}
