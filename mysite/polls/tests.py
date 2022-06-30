@@ -73,3 +73,23 @@ class QuestionIndexViewTest(TransactionTestCase):
             question2=create_question(question_text='Past Question 2')
         response=self.client.get(reverse('polls:index'))
         self.assertQuerysetEqual(response.context['latest_question_list'],[question2,question1])
+
+class QuestionDetailViewTest(TransactionTestCase):
+    reset_sequences: True
+    # test future questions
+    def test_future_question(self):
+        with patch('django.utils.timezone.now', return_value=timezone.now()+
+        datetime.timedelta(days=30)):
+            future_question=create_question(question_text='Future Question')
+        url=reverse('polls:detail',args=(future_question.id,))
+        response=self.client.get(url)
+        self.assertContains(response,future_question.question_text)
+    
+    # test past questions
+    def test_past_question(self):
+        with patch('django.utils.timezone.now', return_value=timezone.now()+
+        datetime.timedelta(days=-30)):
+            past_question=create_question(question_text='Past Question')
+        url=reverse('polls:detail',args=(past_question.id,))
+        response=self.client.get(url)
+        self.assertContains(response,past_question.question_text)
