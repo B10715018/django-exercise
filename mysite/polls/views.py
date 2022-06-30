@@ -2,6 +2,7 @@ from django.shortcuts import render,get_object_or_404
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
+from django.utils import timezone
 # from django.template import loader
 
 from .models import Question,Choice
@@ -9,7 +10,8 @@ from .models import Question,Choice
 # render(http object, template_path, context situasinya apa yg di pass ke front-end)
 # reverse is redirect to other website
 def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    #<name>__lte tuh artinya less than equal
+    latest_question_list = Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
     context = {'latest_question_list': latest_question_list}
     return render(request, 'polls/index.html', context)
 
